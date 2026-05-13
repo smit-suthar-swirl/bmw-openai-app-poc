@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Vehicle {
+  id           String             @id @default(cuid())
+  name         String
+  type         String             // SUV | Sedan | Coupe | EV | Sports
+  price        Int
+  range        Int?               // km range for EVs; null otherwise
+  horsepower   Int
+  acceleration Float              // 0-100 km/h seconds
+  seating      Int
+  description  String
+  imageUrl     String?
+  features     String[]
+  isElectric   Boolean            @default(false)
+  tags         String[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  bookings     TestDriveBooking[]
+  inventory    Inventory[]
+
+  @@index([type])
+  @@index([isElectric])
+  @@index([price])
+  @@map("vehicles")
+}
+
+model Inventory {
+  id        String   @id @default(cuid())
+  vehicleId String
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+  city      String   // Dubai | Abu Dhabi | Sharjah
+  quantity  Int      @default(0)
+  inStock   Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+
+  @@unique([vehicleId, city])
+  @@index([city])
+  @@map("inventory")
+}
+
+model Dealer {
+  id           String             @id @default(cuid())
+  name         String
+  city         String
+  address      String
+  phone        String
+  email        String?
+  openingHours String
+  lat          Float
+  lng          Float
+  createdAt    DateTime           @default(now())
+  bookings     TestDriveBooking[]
+
+  @@index([city])
+  @@map("dealers")
+}
+
+model TestDriveBooking {
+  id            String   @id @default(cuid())
+  firstName     String
+  lastName      String
+  email         String
+  phone         String
+  vehicleId     String
+  vehicle       Vehicle  @relation(fields: [vehicleId], references: [id])
+  dealerId      String
+  dealer        Dealer   @relation(fields: [dealerId], references: [id])
+  preferredDate DateTime
+  status        String   @default("pending") // pending | confirmed | cancelled
+  notes         String?
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@map("test_drive_bookings")
+}
+
+model User {
+  id           String             @id @default(cuid())
+  email        String             @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  phone        String?
+  role         String             @default("customer") // customer | staff | admin
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  bookings     TestDriveBooking[]
+
+  @@map("users")
+}
+
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  event      String   // search | compare | pricing | dealer_search | booking
+  properties Json
+  userId     String?
+  sessionId  String?
+  createdAt  DateTime @default(now())
+
+  @@index([event])
+  @@index([createdAt])
+  @@map("analytics_events")
+}

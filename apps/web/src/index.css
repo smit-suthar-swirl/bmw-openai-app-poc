@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-bmw-black text-bmw-light antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-bmw-dark;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-bmw-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-bmw-silver;
+  }
+}
+
+@layer components {
+  .bmw-card {
+    @apply bg-bmw-card border border-bmw-border rounded-2xl overflow-hidden;
+  }
+
+  .bmw-btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm;
+  }
+
+  .bmw-btn-primary {
+    @apply bmw-btn bg-bmw-blue text-white hover:bg-bmw-darkblue active:scale-95;
+  }
+
+  .bmw-btn-ghost {
+    @apply bmw-btn bg-transparent border border-bmw-border text-bmw-light hover:border-bmw-blue hover:text-bmw-blue;
+  }
+
+  .bmw-input {
+    @apply w-full bg-bmw-dark border border-bmw-border rounded-xl px-4 py-3 text-bmw-light
+           placeholder-bmw-silver outline-none transition-all duration-200
+           focus:border-bmw-blue focus:ring-1 focus:ring-bmw-blue;
+  }
+
+  .spec-badge {
+    @apply px-3 py-1 bg-bmw-dark border border-bmw-border rounded-full text-xs text-bmw-silver;
+  }
+
+  .chat-bubble-user {
+    @apply ml-auto bg-bmw-blue text-white rounded-2xl rounded-tr-sm px-4 py-3 max-w-xs;
+  }
+
+  .chat-bubble-ai {
+    @apply mr-auto bg-bmw-card border border-bmw-border text-bmw-light rounded-2xl rounded-tl-sm px-4 py-3 max-w-lg;
+  }
+}
