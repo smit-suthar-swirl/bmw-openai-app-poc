@@ -42,7 +42,7 @@ export function createApp() {
 
   // When NGROK_URL is set the server is exposed publicly for ChatGPT — allow all origins.
   // In local-only mode restrict to the Vite dev server.
-  const corsOrigin = process.env.NGROK_URL ? true : (process.env.CORS_ORIGIN ?? 'http://localhost:5173');
+  const corsOrigin = (process.env.NGROK_URL || process.env.RAILWAY_PUBLIC_DOMAIN) ? true : (process.env.CORS_ORIGIN ?? 'http://localhost:5173');
 
   app.use(
     cors({
@@ -80,7 +80,8 @@ export function createApp() {
 
   // ── OpenAI App manifest (both paths — standard + legacy) ─────────────────
   app.get('/.well-known/ai-plugin.json', (_req: Request, res: Response) => {
-    const ngrokUrl = process.env.NGROK_URL ?? `http://localhost:${process.env.PORT ?? 3001}`;
+    const railwayDomain = process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : null;
+    const ngrokUrl = process.env.NGROK_URL ?? railwayDomain ?? `http://localhost:${process.env.PORT ?? 3001}`;
     res.json({
       schema_version: 'v1',
       name_for_human: 'BMW AI Assistant',
@@ -96,7 +97,8 @@ export function createApp() {
   });
 
   app.get('/app-manifest.json', (_req: Request, res: Response) => {
-    const ngrokUrl = process.env.NGROK_URL ?? `http://localhost:${process.env.PORT ?? 3001}`;
+    const railwayDomain = process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : null;
+    const ngrokUrl = process.env.NGROK_URL ?? railwayDomain ?? `http://localhost:${process.env.PORT ?? 3001}`;
     res.json({
       schema_version: 'v1',
       name_for_human: 'BMW AI Assistant',
@@ -118,7 +120,8 @@ export function createApp() {
 
   // ── OpenAPI spec ─────────────────────────────────────────────────────────
   app.get('/openapi.yaml', (_req: Request, res: Response) => {
-    const ngrokUrl = process.env.NGROK_URL ?? `http://localhost:${process.env.PORT ?? 3001}`;
+    const railwayDomain = process.env.RAILWAY_PUBLIC_DOMAIN ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}` : null;
+    const ngrokUrl = process.env.NGROK_URL ?? railwayDomain ?? `http://localhost:${process.env.PORT ?? 3001}`;
     const yaml = `openapi: 3.1.0
 info:
   title: BMW AI Assistant
