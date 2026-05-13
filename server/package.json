@@ -8,6 +8,7 @@
     "dev:mcp": "tsx src/mcp/index.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "deploy:setup": "prisma db push && tsx prisma/seed.ts",
     "start:mcp": "node dist/mcp/index.js",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
